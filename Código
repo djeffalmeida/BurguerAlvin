@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 3x ImageViews -->
+        <ImageView
+            android:id="@+id/imageViewHamburger"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/hamburger_image"
+            android:contentDescription="Imagem de Hambúrguer" />
+
+        <ImageView
+            android:id="@+id/imageViewFries"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/fries_image"
+            android:contentDescription="Imagem de Batata Frita" />
+
+        <ImageView
+            android:id="@+id/imageViewDrink"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/drink_image"
+            android:contentDescription="Imagem de Bebida" />
+
+        <!-- 2x Buttons -->
+        <Button
+            android:id="@+id/buttonConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirmar Pedido" />
+
+        <Button
+            android:id="@+id/buttonReset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Resetar Pedido" />
+
+        <!-- 2x RadioGroups -->
+        <RadioGroup
+            android:id="@+id/radioGroupSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/radioSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pequeno" />
+            <RadioButton
+                android:id="@+id/radioMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Médio" />
+            <RadioButton
+                android:id="@+id/radioLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grande" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/radioGroupExtras"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/radioCheese"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Queijo" />
+            <RadioButton
+                android:id="@+id/radioBacon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bacon" />
+            <RadioButton
+                android:id="@+id/radioSalad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salada" />
+        </RadioGroup>
+
+        <!-- 2x Switches -->
+        <Switch
+            android:id="@+id/switchDelivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Entrega" />
+
+        <Switch
+            android:id="@+id/switchDrink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bebida" />
+
+        <!-- ProgressBar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- TextInputLayout -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nome do Cliente" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</ScrollView>
+
+
+package com.example.burgueralvin;
+
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class MainActivity extends AppCompatActivity {
+
+    private static int pedidoCount = 1830;
+    private RadioGroup radioGroupSize, radioGroupExtras;
+    private RadioButton radioSmall, radioMedium, radioLarge, radioCheese, radioBacon, radioSalad;
+    private Switch switchDelivery, switchDrink;
+    private ProgressBar progressBar;
+    private EditText editTextName;
+    private Button buttonConfirm, buttonReset;
+    private RecyclerView recyclerView;
+    private PedidoAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        radioGroupSize = findViewById(R.id.radioGroupSize);
+        radioGroupExtras = findViewById(R.id.radioGroupExtras);
+        radioSmall = findViewById(R.id.radioSmall);
+        radioMedium = findViewById(R.id.radioMedium);
+        radioLarge = findViewById(R.id.radioLarge);
+        radioCheese = findViewById(R.id.radioCheese);
+        radioBacon = findViewById(R.id.radioBacon);
+        radioSalad = findViewById(R.id.radioSalad);
+        switchDelivery = findViewById(R.id.switchDelivery);
+        switchDrink = findViewById(R.id.switchDrink);
+        progressBar = findViewById(R.id.progressBar);
+        editTextName = findViewById(R.id.editTextName);
+        buttonConfirm = findViewById(R.id.buttonConfirm);
+        buttonReset = findViewById(R.id.buttonReset);
+        recyclerView = findViewById(R.id.recyclerView);
+
+        // RecyclerView setup
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PedidoAdapter();
+        recyclerView.setAdapter(adapter);
+
+        // Confirm button
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmOrder();
+            }
+        });
+
+        // Reset button
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetForm();
+            }
+        });
+    }
+
+    private void confirmOrder() {
+        String nomeCliente = editTextName.getText().toString();
+        String tamanho = getSelectedSize();
+        String extras = getSelectedExtras();
+        boolean entrega = switchDelivery.isChecked();
+        boolean bebida = switchDrink.isChecked();
+
+        // Show progress bar
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Increment pedido number
+        pedidoCount++;
+
+        // Wait a moment and then show confirmation dialog
+        progressBar.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+
+                // Build confirmation message
+                String message = "Pedido #" + pedidoCount + "\n" +
+                        "Cliente: " + nomeCliente + "\n" +
+                        "Tamanho: " + tamanho + "\n" +
+                        "Extras: " + extras + "\n" +
+                        "Entrega: " + (entrega ? "Sim" : "Não") + "\n" +
+                        "Bebida: " + (bebida ? "Sim" : "Não");
+
+                // Show AlertDialog
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Confirmar Pedido")
+                        .setMessage(message)
+                        .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(MainActivity.this, "Pedido Confirmado!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
+        }, 2000);
+    }
+
+    private void resetForm() {
+        editTextName.setText("");
+        radioGroupSize.clearCheck();
+        radioGroupExtras.clearCheck();
+        switchDelivery.setChecked(false);
+        switchDrink.setChecked(false);
+    }
+
+    private String getSelectedSize() {
+        int selectedId = radioGroupSize.getCheckedRadioButtonId();
+        if (selectedId == radioSmall.getId()) return "Pequeno";
+        if (selectedId == radioMedium.getId()) return "Médio";
+        if (selectedId == radioLarge.getId()) return "Grande";
+        return "Não selecionado";
+    }
+
+    private String getSelectedExtras() {
+        StringBuilder extras = new StringBuilder();
+        if (radioCheese.isChecked()) extras.append("Queijo, ");
+        if (radioBacon.isChecked()) extras.append("Bacon, ");
+        if (radioSalad.isChecked()) extras.append("Salada, ");
+        return extras.length() > 0 ? extras.substring(0, extras.length() - 2) : "Nenhum";
+    }
+}
+
+
+package com.example.burgueralvin;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.PedidoViewHolder> {
+
+    private List<String> pedidos = new ArrayList<>();
+
+    @Override
+    public PedidoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pedido, parent, false);
+        return new PedidoViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(PedidoViewHolder holder, int position) {
+        holder.bind(pedidos.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return pedidos.size();
+    }
+
+    public void addPedido(String pedido) {
+        pedidos.add(pedido);
+        notifyDataSetChanged();
+    }
+
+    public static class PedidoViewHolder extends RecyclerView.ViewHolder {
+        private TextView textViewPedido;
+
+        public PedidoViewHolder(View itemView) {
+            super(itemView);
+            textViewPedido = itemView.findViewById(R.id.textViewPedido);
+        }
+
+        public void bind(String pedido) {
+            textViewPedido.setText(pedido);
+        }
+    }
+}
